@@ -1,12 +1,10 @@
+import sys
+sys.path.insert(1, '../')
+sys.dont_write_bytecode = True
 from random import randrange
-class colors:
-    RED = '\033[31m'
-    ENDC = '\033[m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
+from game import *
 
-class Game:
+class Bagels(Game):
 
 	def __init__(self, max_guess):
 		self.round = 1
@@ -33,23 +31,11 @@ class Game:
 		self.round = 1
 		while (True):
 			guess = input("Guess #"+str(self.round)+":\n")
-			answer = ""
 			if (len(guess) == 3):
-				for i in range(3):
-					if (guess[i] == self.number_to_guess[i]):
-						answer += "Fermi "
-					elif (guess[i] in self.number_to_guess):
-						answer += "Pico "
-					else:
-						answer += "- "
-				if (answer == "- - - "):
-					answer = "Bagels"
-
 				if (self.number_to_guess == guess):
 					self.win()
 					break
-				else:
-					print(answer)
+				self.check_guess(guess)
 				self.round += 1
 			else:
 				print("You must provide a number of lengths 3")
@@ -58,26 +44,29 @@ class Game:
 				break
 		self.retry()
 
-	def retry(self):
-		retry = ""
-		while (retry != "yes" and retry != "no"):
-			retry = input("Do you want to retry ? (yes or no)")
-		if (retry == "no"):
-			print("Bye bye")
-		elif (retry == "yes"):
-			self.run()
-
 	def generate_number(self):
 		random_number = str(randrange(10)) + str(randrange(10)) + str(randrange(10))
 		return random_number
 
+	def check_guess(self, guess):
+		for i in range(3):
+			if (guess[i] == self.number_to_guess[i]):
+				answer += "Fermi "
+			elif (guess[i] in self.number_to_guess):
+				answer += "Pico "
+			else:
+				answer += "- "
+			if (answer == "- - - "):
+				answer = "Bagels"
+		print(answer)
+
+
 	def lost(self):
-		# print(colors.RED + "You lost!" + colors.ENDC)
-		print(colors.RED + "Aya t'est nul!" + colors.ENDC)
+		print(colors.RED + "You lost!" + colors.ENDC)
 	
 	def win(self):
 		print(colors.GREEN + "BINGO !!!" + colors.ENDC)
 
 
-game = Game(10)
+game = Bagels(10)
 game.run()
